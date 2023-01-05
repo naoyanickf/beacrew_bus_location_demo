@@ -1,41 +1,56 @@
-<!doctype html>
-<html class="no-js" lang="">
-
+<!DOCTYPE html>
+<html lang="en" class="no-js">
 <head>
-  <meta charset="utf-8">
-  <title></title>
-  <meta name="description" content="">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
-  <!-- Place favicon.ico in the root directory -->
-
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/main.css">
-
-  <meta name="theme-color" content="#fafafa">
-</head>
-
-<body>
-
-  <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
-  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/main.js"></script>
-
-  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <title>運転手のサンプル</title>
+  <style>
+    #maps {
+      width: 100%;
+      max-width: 700px;
+      height: 500px;
+      margin: 0 auto;
+      padding: 0;
+    }
+  </style>
   <script>
-    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
-  </script>
-  <script src="https://www.google-analytics.com/analytics.js" async></script>
-</body>
+     function success(pos) {
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        var latlng = new google.maps.LatLng(lat, lng); //中心の緯度, 経度
+        var map = new google.maps.Map(document.getElementById('maps'), {
+          zoom: 17,
+          center: latlng
+        });
+        var marker = new google.maps.Marker({
+          position: latlng, //マーカーの位置（必須）
+          map: map //マーカーを表示する地図
+        });
+      }
+      function fail(error) {
+        alert('位置情報の取得に失敗しました。エラーコード：' + error.code);
+        var latlng = new google.maps.LatLng(35.6812405, 139.7649361); //東京駅
+        var map = new google.maps.Map(document.getElementById('maps'), {
+          zoom: 10,
+          center: latlng
+        });
+      }
 
+    function initMap() {
+      navigator.geolocation.getCurrentPosition(success, fail);
+    }
+
+
+    const updateLocation = function() {
+      navigator.geolocation.getCurrentPosition(success, fail);
+      console.log("updated location!")      
+    }
+
+    setInterval(updateLocation, 3000)
+  </script>
+</head>
+<body>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGyKDdQupOdCQIBdGaESa9bed_ObdsvyA&callback=initMap" async defer></script>
+  <figure id="maps"></figure>
+</body>
 </html>
